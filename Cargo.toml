@@ -1,0 +1,11 @@
+[package]
+name = "dummy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.86"
+clap = { version = "4.5.8", features = ["derive"] }
+fake = { version = "2.9.2", features = ["derive", "http", "random_color"] }
+serde = { version = "1.0.203", features = ["derive"] }
+serde_json = "1.0.120"
