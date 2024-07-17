@@ -1,12 +1,12 @@
 use fake::Fake;
 use fake::faker::boolean::raw::Boolean;
 use fake::faker::color::raw::*;
-use fake::faker::company::raw::{Bs, BsAdj, BsNoun, BsVerb, Buzzword, BuzzwordMiddle, BuzzwordTail, CatchPhase, CompanyName, CompanySuffix, Industry, Profession};
+use fake::faker::company::raw::*;
 use fake::faker::http::raw::*;
-use fake::faker::internet::raw::{DomainSuffix, FreeEmail, FreeEmailProvider, IP, IPv4, IPv6, MACAddress, Password, SafeEmail, UserAgent, Username};
-use fake::faker::lorem::raw::{Paragraph, Paragraphs, Sentence, Sentences, Word, Words};
-use fake::faker::name::raw::{FirstName, LastName, Name, NameWithTitle, Suffix, Title};
-use fake::faker::number::raw::{Digit, NumberWithFormat};
+use fake::faker::internet::raw::*;
+use fake::faker::lorem::raw::*;
+use fake::faker::name::raw::*;
+use fake::faker::number::raw::*;
 use fake::locales::{EN, JA_JP};
 use serde_json::{Number, Value};
 
