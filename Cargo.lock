@@ -158,17 +158,6 @@ checksum = "339544cc9e2c4dc3fc7149fd630c5f22263a4fdf18a98afd0075784968b5cf00"
 
 [[package]]
 name = "dummy"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "fake",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "dummy"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7e57e12b69e57fad516e01e2b3960f122696fdb13420e1a88ed8e210316f2876"
@@ -186,11 +175,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1c25829bde82205da46e1823b2259db6273379f626fc211f126f65654a2669be"
 dependencies = [
  "deunicode",
- "dummy 0.7.0",
+ "dummy",
  "http",
  "rand 0.8.5",
  "random_color",
  "url-escape",
+]
+
+[[package]]
+name = "fake-cli"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "fake",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
