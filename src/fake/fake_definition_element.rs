@@ -44,63 +44,63 @@ impl FakeDefinitionElement {
 impl FakeDefinitionElement {
     pub fn generate_word(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: word, lang is missing"))?;
-        let lang = trim_value_string(&lang_value.to_string());
-        Ok(FakeDefinitionElement::Word(Word::new(fake_type.to_string(), lang)))
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: word, lang should be a string"))?;
+        Ok(FakeDefinitionElement::Word(Word::new(fake_type.to_string(), lang.to_string())))
     }
 
     pub fn generate_last_name(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: last_name, lang is missing"))?;
-        let lang = trim_value_string(&lang_value.to_string());
-        Ok(FakeDefinitionElement::LastName(LastName::new(fake_type.to_string(), lang)))
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: last_name, lang should be a string"))?;
+        Ok(FakeDefinitionElement::LastName(LastName::new(fake_type.to_string(), lang.to_string())))
     }
 
     pub fn generate_words(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: words, lang is missing"))?;
         let min_value = fake_definition_element_setting.get("min").ok_or(anyhow!("fake_type: words, min is missing"))?;
         let max_value = fake_definition_element_setting.get("max").ok_or(anyhow!("fake_type: words, max is missing"))?;
-        let min = trim_value_string(&min_value.to_string()).parse::<usize>().map_err(|_| anyhow!("fake_type: words, min parse error. please 0 < min "))?;
-        let max = trim_value_string(&max_value.to_string()).parse::<usize>().map_err(|_| anyhow!("fake_type: words, max parse error. please 0 < max "))?;
-        let lang = trim_value_string(&lang_value.to_string());
+        let min = min_value.as_u64().ok_or(anyhow!("fake_type: words, min parse error. please 0 < min "))? as usize;
+        let max = max_value.as_u64().ok_or(anyhow!("fake_type: words, max parse error. please 0 < max "))? as usize;
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: words, lang should be a string"))?;
 
-        Ok(FakeDefinitionElement::Words(Words::new(fake_type.to_string(), lang, min, max)?))
+        Ok(FakeDefinitionElement::Words(Words::new(fake_type.to_string(), lang.to_string(), min, max)?))
     }
 
     pub fn generate_boolean(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: boolean, lang is missing"))?;
         let ratio_value = fake_definition_element_setting.get("ratio").ok_or(anyhow!("fake_type: boolean, ratio is missing"))?;
-        let ratio = trim_value_string(&ratio_value.to_string()).parse::<u8>().map_err(|_| anyhow!("fake_type: boolean, ratio parse error. please input 0 to 100"))?;
-        let lang = trim_value_string(&lang_value.to_string());
-        Ok(FakeDefinitionElement::Boolean(Boolean::new(fake_type.to_string(), lang, ratio)))
+        let ratio = ratio_value.as_u64().ok_or(anyhow!("fake_type: boolean, ratio parse error. please input 0 to 100"))? as u8;
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: boolean, lang should be a string"))?;
+        Ok(FakeDefinitionElement::Boolean(Boolean::new(fake_type.to_string(), lang.to_string(), ratio)))
     }
 
     pub fn generate_digit(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: digit, lang is missing"))?;
-        let lang = trim_value_string(&lang_value.to_string());
-        Ok(FakeDefinitionElement::Digit(Digit::new(fake_type.to_string(), lang)))
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: digit, lang should be a string"))?;
+        Ok(FakeDefinitionElement::Digit(Digit::new(fake_type.to_string(), lang.to_string())))
     }
 
     pub fn generate_sentence(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: sentence, lang is missing"))?;
         let min_value = fake_definition_element_setting.get("min").ok_or(anyhow!("fake_type: sentence, min is missing"))?;
         let max_value = fake_definition_element_setting.get("max").ok_or(anyhow!("fake_type: sentence, max is missing"))?;
-        let min = trim_value_string(&min_value.to_string()).parse::<usize>().map_err(|_| anyhow!("fake_type: sentence, min parse error. please 0 < min "))?;
-        let max = trim_value_string(&max_value.to_string()).parse::<usize>().map_err(|_| anyhow!("fake_type: sentence, max parse error. please 0 < max "))?;
-        let lang = trim_value_string(&lang_value.to_string());
+        let min = min_value.as_u64().ok_or(anyhow!("fake_type: sentence, min parse error. please 0 < min "))? as usize;
+        let max = max_value.as_u64().ok_or(anyhow!("fake_type: sentence, max parse error. please 0 < max "))? as usize;
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: sentence, lang should be a string"))?;
 
-        Ok(FakeDefinitionElement::Sentence(Sentence::new(fake_type.to_string(), lang, min, max)?))
+        Ok(FakeDefinitionElement::Sentence(Sentence::new(fake_type.to_string(), lang.to_string(), min, max)?))
     }
 
     pub fn generate_number_with_format(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: number_with_format, lang is missing"))?;
         let format_value = fake_definition_element_setting.get("format").ok_or(anyhow!("fake_type: number_with_format, format is missing"))?;
-        let format = trim_value_string(&format_value.to_string());
-        let lang = trim_value_string(&lang_value.to_string());
-        Ok(FakeDefinitionElement::NumberWithFormat(NumberWithFormat::new(fake_type.to_string(), lang, format)))
+        let format = format_value.as_str().ok_or(anyhow!("fake_type: number_with_format, format should be a string"))?;
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: number_with_format, lang should be a string"))?;
+        Ok(FakeDefinitionElement::NumberWithFormat(NumberWithFormat::new(fake_type.to_string(), lang.to_string(), format.to_string())))
     }
 
     pub fn generate_array(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
         let count_value = fake_definition_element_setting.get("count").ok_or(anyhow!("fake_type: array, count is missing"))?;
-        let count = trim_value_string(&count_value.to_string()).parse::<usize>().map_err(|_| anyhow!("fake_type: array, count parse error. please 0 < count"))?;
+        let count = count_value.as_u64().ok_or(anyhow!("fake_type: array, count parse error. please 0 < count "))? as usize;
 
         let mut deque = VecDeque::new();
         let exclude_conditions = vec!["count", "fake_type"];
@@ -159,8 +159,4 @@ impl FakeDefinitionElement {
 
         Ok(obj)
     }
-}
-
-fn trim_value_string(s: &str) -> String {
-    s.trim_matches('"').to_string()
 }
