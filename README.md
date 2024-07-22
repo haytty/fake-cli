@@ -58,3 +58,7 @@ The available `fake_type`'s are:
 Note: `Array` and `Map` are specific to fake-cli.
 
 The `fake_type` can be any callable method from fake-rs, and it is ready to use when converted to snake_case.
+
+## License
+
+This project is licensed under the terms of the [MIT License](LICENSE) (or whichever license you have chosen).
