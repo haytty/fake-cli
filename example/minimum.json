@@ -1,0 +1,16 @@
+{
+  "example_word": {
+    "fake_type": "word",
+    "lang": "JA_JP"
+  },
+  "example_name": {
+    "fake_type": "last_name",
+    "lang": "EN"
+  },
+  "example_sentence": {
+    "fake_type": "sentence",
+    "lang": "JA_JP",
+    "min": 1,
+    "max": 5
+  }
+}

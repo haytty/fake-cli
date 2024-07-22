@@ -1,8 +1,6 @@
 mod cli;
-mod faker_type;
-mod error;
 mod file;
-mod service;
+mod fake;
 
 use anyhow::Result;
 

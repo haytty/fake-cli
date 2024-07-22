@@ -1,0 +1,52 @@
+{
+  "example_word": {
+    "fake_type": "word",
+    "lang": "JA_JP"
+  },
+  "example_words": {
+    "fake_type": "words",
+    "lang": "JA_JP",
+    "min": 2,
+    "max": 5
+  },
+  "example_sentence": {
+    "fake_type": "sentence",
+    "lang": "JA_JP",
+    "min": 3,
+    "max": 4
+  },
+  "example_digit": {
+    "fake_type": "digit",
+    "lang": "JA_JP",
+    "parse_type": "u8"
+  },
+  "example_number_with_format": {
+    "fake_type": "number_with_format",
+    "lang": "JA_JP",
+    "format": "FLAT 0# ^#/F"
+  },
+  "example_boolean": {
+    "fake_type": "boolean",
+    "lang": "JA_JP",
+    "ratio": 50
+  },
+  "example_array": {
+    "fake_type": "array",
+    "count": 4,
+    "example_object": {
+      "fake_type": "word",
+      "lang": "JA_JP"
+    }
+  },
+  "example_objects": {
+    "fake_type": "map",
+    "example_element_object1": {
+      "fake_type": "word",
+      "lang": "JA_JP"
+    },
+    "example_element_object2": {
+      "fake_type": "word",
+      "lang": "JA_JP"
+    }
+  }
+}

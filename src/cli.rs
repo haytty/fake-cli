@@ -1,20 +1,12 @@
-use std::collections::BTreeMap;
-use std::{fmt, fs};
 use clap::Parser;
-use fake::{Fake, Faker};
-use fake::faker::name::raw::LastName;
-use fake::locales::JA_JP;
-use anyhow::{Context, Result};
-use serde_json::{to_string_pretty, Value};
-use crate::faker_type::FakerType;
-use crate::{file, service};
+use anyhow::{Result};
+use serde_json::{Value};
+use crate::{file};
+use crate::fake::fake_definition::FakeDefinition;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    #[arg(short, long)]
-    yaml: Option<String>,
-
     #[arg(short, long)]
     json: String,
 
@@ -25,9 +17,15 @@ struct Args {
 
 pub fn start() -> Result<()> {
     let _args = Args::parse();
-   
-    let json_data = file::load_json(_args.json)?;
-    service::generate_dummy_data::generate_dummy_data(&json_data);
+
+    let fake_definition_json = file::load_json(_args.json)?;
+    output_json(&fake_definition_json)
+}
+
+fn output_json(fake_definition_json: &Value) -> Result<()> {
+    let fake_definition = FakeDefinition::from_json(fake_definition_json)?;
+    let json = serde_json::to_string_pretty(&fake_definition.to_value())?;
+    println!("{}", json);
 
     Ok(())
 }

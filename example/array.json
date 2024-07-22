@@ -1,0 +1,17 @@
+{
+  "example_array": {
+    "fake_type": "array",
+    "count": 10,
+    "example_map": {
+      "fake_type": "map",
+      "example_name_1": {
+        "fake_type": "last_name",
+        "lang": "JA_JP"
+      },
+      "example_name_2": {
+        "fake_type": "last_name",
+        "lang": "JA_JP"
+      }
+    }
+  }
+}

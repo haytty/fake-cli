@@ -1,8 +1,0 @@
-[package]
-name = "faker_type_generator"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-anyhow = "1.0.86"
-tera = "1.20.0"
