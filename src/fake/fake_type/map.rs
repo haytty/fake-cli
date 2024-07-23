@@ -33,3 +33,9 @@ impl Map {
         Self { _fake_type, map }
     }
 }
+
+impl From<Map> for FakeDefinitionElement {
+    fn from(value: Map) -> Self {
+        FakeDefinitionElement::Map(value)
+    }
+}

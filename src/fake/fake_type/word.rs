@@ -1,7 +1,8 @@
 use fake::Fake;
 use fake::faker::lorem;
 use serde_json::Value;
-use crate::fake::fake_type::FakeType;
+use crate::fake::fake_definition_element::FakeDefinitionElement;
+use crate::fake::fake_type::{FakeElement, FakeType};
 use crate::fake::lang::{get_language, Language};
 
 #[derive(Debug)]
@@ -30,9 +31,14 @@ impl FakeType for Word {
     }
 }
 
-impl Word {
-    pub fn new(_fake_type: String, lang: String) -> Self {
+impl FakeElement for Word {
+    fn new(_fake_type: String, lang: String) -> Self {
         Self { _fake_type, lang }
     }
 }
 
+impl From<Word> for FakeDefinitionElement {
+    fn from(value: Word) -> Self {
+        FakeDefinitionElement::Word(value)
+    }
+}

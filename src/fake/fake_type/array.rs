@@ -33,3 +33,9 @@ impl Array {
         Self { _fake_type, count, fake_definition_element }
     }
 }
+
+impl From<Array> for FakeDefinitionElement {
+    fn from(value: Array) -> Self {
+        FakeDefinitionElement::Array(value)
+    }
+}

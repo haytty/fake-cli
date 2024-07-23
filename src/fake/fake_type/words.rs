@@ -1,9 +1,10 @@
 use fake::Fake;
 use fake::faker::lorem;
 use serde_json::Value;
-use crate::fake::fake_type::FakeType;
+use crate::fake::fake_type::{FakeType, FakeWithRangeElement};
 use crate::fake::lang::{get_language, Language};
 use anyhow::{Result, anyhow};
+use crate::fake::fake_definition_element::FakeDefinitionElement;
 
 #[derive(Debug)]
 pub struct Words {
@@ -37,8 +38,8 @@ impl FakeType for Words {
     }
 }
 
-impl Words {
-    pub fn new(_fake_type: String, lang: String, min: usize, max: usize) -> Result<Self> {
+impl FakeWithRangeElement for Words {
+    fn new(_fake_type: String, lang: String, min: usize, max: usize) -> Result<Self> {
         match (min, max) {
             (min, max) if min >= max => {
                 Err(anyhow!("fake_type: words, please setting 0 <= min, 0 <= max, min < max"))
@@ -47,5 +48,11 @@ impl Words {
                 Ok(Self { _fake_type, lang, min, max })
             }
         }
+    }
+}
+
+impl From<Words> for FakeDefinitionElement {
+    fn from(value: Words) -> Self {
+        FakeDefinitionElement::Words(value)
     }
 }

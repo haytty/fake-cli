@@ -8,7 +8,7 @@ use crate::fake::fake_type::number_with_format::NumberWithFormat;
 use crate::fake::fake_type::sentence::Sentence;
 use crate::fake::fake_type::words::Words;
 use anyhow::{anyhow, Result};
-use crate::fake::fake_type::FakeType;
+use crate::fake::fake_type::{FakeElement, FakeType, FakeWithFormatElement, FakeWithRangeElement, FakeWithRatioElement};
 use crate::fake::fake_type::last_name::LastName;
 use crate::fake::fake_type::word::Word;
 
@@ -42,60 +42,52 @@ impl FakeDefinitionElement {
 }
 
 impl FakeDefinitionElement {
-    pub fn generate_word(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
-        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: word, lang is missing"))?;
-        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: word, lang should be a string"))?;
-        Ok(FakeDefinitionElement::Word(Word::new(fake_type.to_string(), lang.to_string())))
+    pub fn generate_element<T>(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement>
+    where
+        T: FakeElement + Into<FakeDefinitionElement>,
+    {
+        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: {}, lang is missing", fake_type))?;
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: {}, lang should be a string", fake_type))?;
+
+        Ok(T::new(fake_type.to_string(), lang.to_string()).into())
     }
 
-    pub fn generate_last_name(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
-        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: last_name, lang is missing"))?;
-        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: last_name, lang should be a string"))?;
-        Ok(FakeDefinitionElement::LastName(LastName::new(fake_type.to_string(), lang.to_string())))
+    pub fn generate_with_range_element<T>(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement>
+    where
+        T: FakeWithRangeElement + Into<FakeDefinitionElement>,
+    {
+        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: {}, lang is missing", fake_type))?;
+        let min_value = fake_definition_element_setting.get("min").ok_or(anyhow!("fake_type: {}, min is missing", fake_type))?;
+        let max_value = fake_definition_element_setting.get("max").ok_or(anyhow!("fake_type: {}, max is missing", fake_type))?;
+        let min = min_value.as_u64().ok_or(anyhow!("fake_type: {}, min parse error. please 0 < min ", fake_type))? as usize;
+        let max = max_value.as_u64().ok_or(anyhow!("fake_type: {}, max parse error. please 0 < max ", fake_type))? as usize;
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: {}, lang should be a string",fake_type))?;
+
+        Ok(T::new(fake_type.to_string(), lang.to_string(), min, max)?.into())
     }
 
-    pub fn generate_words(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
-        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: words, lang is missing"))?;
-        let min_value = fake_definition_element_setting.get("min").ok_or(anyhow!("fake_type: words, min is missing"))?;
-        let max_value = fake_definition_element_setting.get("max").ok_or(anyhow!("fake_type: words, max is missing"))?;
-        let min = min_value.as_u64().ok_or(anyhow!("fake_type: words, min parse error. please 0 < min "))? as usize;
-        let max = max_value.as_u64().ok_or(anyhow!("fake_type: words, max parse error. please 0 < max "))? as usize;
-        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: words, lang should be a string"))?;
-
-        Ok(FakeDefinitionElement::Words(Words::new(fake_type.to_string(), lang.to_string(), min, max)?))
-    }
-
-    pub fn generate_boolean(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
-        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: boolean, lang is missing"))?;
-        let ratio_value = fake_definition_element_setting.get("ratio").ok_or(anyhow!("fake_type: boolean, ratio is missing"))?;
+    pub fn generate_with_ratio_element<T>(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement>
+    where
+        T: FakeWithRatioElement + Into<FakeDefinitionElement>,
+    {
+        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: {}, lang is missing", fake_type))?;
+        let ratio_value = fake_definition_element_setting.get("ratio").ok_or(anyhow!("fake_type: {}, ratio is missing", fake_type))?;
         let ratio = ratio_value.as_u64().ok_or(anyhow!("fake_type: boolean, ratio parse error. please input 0 to 100"))? as u8;
         let lang = lang_value.as_str().ok_or(anyhow!("fake_type: boolean, lang should be a string"))?;
-        Ok(FakeDefinitionElement::Boolean(Boolean::new(fake_type.to_string(), lang.to_string(), ratio)))
+
+        Ok(T::new(fake_type.to_string(), lang.to_string(), ratio).into())
     }
 
-    pub fn generate_digit(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
-        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: digit, lang is missing"))?;
-        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: digit, lang should be a string"))?;
-        Ok(FakeDefinitionElement::Digit(Digit::new(fake_type.to_string(), lang.to_string())))
-    }
+    pub fn generate_with_format_element<T>(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement>
+    where
+        T: FakeWithFormatElement + Into<FakeDefinitionElement>,
+    {
+        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: {}, lang is missing", fake_type))?;
+        let format_value = fake_definition_element_setting.get("format").ok_or(anyhow!("fake_type: {}, format is missing", fake_type))?;
+        let format = format_value.as_str().ok_or(anyhow!("fake_type: {}, format should be a string", fake_type))?;
+        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: {}, lang should be a string", fake_type))?;
 
-    pub fn generate_sentence(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
-        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: sentence, lang is missing"))?;
-        let min_value = fake_definition_element_setting.get("min").ok_or(anyhow!("fake_type: sentence, min is missing"))?;
-        let max_value = fake_definition_element_setting.get("max").ok_or(anyhow!("fake_type: sentence, max is missing"))?;
-        let min = min_value.as_u64().ok_or(anyhow!("fake_type: sentence, min parse error. please 0 < min "))? as usize;
-        let max = max_value.as_u64().ok_or(anyhow!("fake_type: sentence, max parse error. please 0 < max "))? as usize;
-        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: sentence, lang should be a string"))?;
-
-        Ok(FakeDefinitionElement::Sentence(Sentence::new(fake_type.to_string(), lang.to_string(), min, max)?))
-    }
-
-    pub fn generate_number_with_format(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
-        let lang_value = fake_definition_element_setting.get("lang").ok_or(anyhow!("fake_type: number_with_format, lang is missing"))?;
-        let format_value = fake_definition_element_setting.get("format").ok_or(anyhow!("fake_type: number_with_format, format is missing"))?;
-        let format = format_value.as_str().ok_or(anyhow!("fake_type: number_with_format, format should be a string"))?;
-        let lang = lang_value.as_str().ok_or(anyhow!("fake_type: number_with_format, lang should be a string"))?;
-        Ok(FakeDefinitionElement::NumberWithFormat(NumberWithFormat::new(fake_type.to_string(), lang.to_string(), format.to_string())))
+        Ok(T::new(fake_type.to_string(), lang.to_string(), format.to_string()).into())
     }
 
     pub fn generate_array(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
@@ -143,17 +135,17 @@ impl FakeDefinitionElement {
         let fake_type = value.as_str().ok_or(anyhow!("fake_definition_element_settings: fake_type convert error"))?;
 
         let obj = match fake_type {
-            "word" => FakeDefinitionElement::generate_word(fake_definition_element_setting, fake_type)?,
-            "last_name" => FakeDefinitionElement::generate_last_name(fake_definition_element_setting, fake_type)?,
-            "words" => FakeDefinitionElement::generate_words(fake_definition_element_setting, fake_type)?,
-            "boolean" => FakeDefinitionElement::generate_boolean(fake_definition_element_setting, fake_type)?,
-            "digit" => FakeDefinitionElement::generate_digit(fake_definition_element_setting, fake_type)?,
-            "sentence" => FakeDefinitionElement::generate_sentence(fake_definition_element_setting, fake_type)?,
-            "number_with_format" => FakeDefinitionElement::generate_number_with_format(fake_definition_element_setting, fake_type)?,
+            "word" => FakeDefinitionElement::generate_element::<Word>(fake_definition_element_setting, fake_type)?,
+            "last_name" => FakeDefinitionElement::generate_element::<LastName>(fake_definition_element_setting, fake_type)?,
+            "words" => FakeDefinitionElement::generate_with_range_element::<Words>(fake_definition_element_setting, fake_type)?,
+            "boolean" => FakeDefinitionElement::generate_with_ratio_element::<Boolean>(fake_definition_element_setting, fake_type)?,
+            "digit" => FakeDefinitionElement::generate_element::<Digit>(fake_definition_element_setting, fake_type)?,
+            "sentence" => FakeDefinitionElement::generate_with_range_element::<Sentence>(fake_definition_element_setting, fake_type)?,
+            "number_with_format" => FakeDefinitionElement::generate_with_format_element::<NumberWithFormat>(fake_definition_element_setting, fake_type)?,
             "array" => FakeDefinitionElement::generate_array(fake_definition_element_setting, fake_type)?,
             "map" => FakeDefinitionElement::generate_map(fake_definition_element_setting, fake_type)?,
             _ => {
-                Err(anyhow!("missing fake_type"))?
+                Err(anyhow!("{} is missing fake_type", fake_type))?
             }
         };
 

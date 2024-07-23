@@ -1,7 +1,8 @@
 use fake::Fake;
 use fake::faker::number;
 use serde_json::Value;
-use crate::fake::fake_type::FakeType;
+use crate::fake::fake_definition_element::FakeDefinitionElement;
+use crate::fake::fake_type::{FakeType, FakeWithFormatElement};
 use crate::fake::lang::{get_language, Language};
 
 #[derive(Debug)]
@@ -32,9 +33,15 @@ impl FakeType for NumberWithFormat {
     }
 }
 
-impl NumberWithFormat {
-    pub fn new(_fake_type: String, lang: String, format: String) -> Self {
+impl FakeWithFormatElement for NumberWithFormat {
+    fn new(_fake_type: String, lang: String, format: String) -> Self {
         Self { _fake_type, lang, format }
+    }
+}
+
+impl From<NumberWithFormat> for FakeDefinitionElement {
+    fn from(value: NumberWithFormat) -> Self {
+        FakeDefinitionElement::NumberWithFormat(value)
     }
 }
 

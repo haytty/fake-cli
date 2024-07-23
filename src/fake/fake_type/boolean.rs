@@ -1,7 +1,8 @@
 use fake::Fake;
 use fake::faker::boolean::raw;
 use serde_json::Value;
-use crate::fake::fake_type::FakeType;
+use crate::fake::fake_definition_element::FakeDefinitionElement;
+use crate::fake::fake_type::{FakeType, FakeWithRatioElement};
 use crate::fake::lang::{get_language, Language};
 
 
@@ -33,8 +34,14 @@ impl FakeType for Boolean {
     }
 }
 
-impl Boolean {
-    pub fn new(_fake_type: String, lang: String, ratio: u8) -> Self {
+impl FakeWithRatioElement for Boolean {
+    fn new(_fake_type: String, lang: String, ratio: u8) -> Self {
         Self { _fake_type, lang, ratio }
+    }
+}
+
+impl From<Boolean> for FakeDefinitionElement {
+    fn from(value: Boolean) -> Self {
+        FakeDefinitionElement::Boolean(value)
     }
 }
