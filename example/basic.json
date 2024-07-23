@@ -1,4 +1,8 @@
 {
+  "example_constant": {
+    "fake_type": "constant",
+    "value": "aaaaaaa"
+  },
   "example_word": {
     "fake_type": "word",
     "lang": "JA_JP"

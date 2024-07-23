@@ -1,0 +1,23 @@
+{
+  "example_constant_1": {
+    "fake_type": "constant",
+    "value": "aaaaaaa"
+  },
+  "example_constant_2": {
+    "fake_type": "constant",
+    "value": 40
+  },
+  "example_constant_3": {
+    "fake_type": "constant",
+    "value": true
+  },
+  "example_constant_4": {
+    "fake_type": "constant",
+    "value": {
+      "example_word": {
+        "fake_type": "word",
+        "lang": "JA_JP"
+      }
+    }
+  }
+}

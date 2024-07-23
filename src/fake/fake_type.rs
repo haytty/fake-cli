@@ -10,6 +10,7 @@ pub mod last_name;
 pub mod digit;
 pub mod boolean;
 pub mod array;
+pub mod constant;
 
 pub trait FakeType {
     type Response;

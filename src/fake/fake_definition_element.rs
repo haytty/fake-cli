@@ -9,6 +9,7 @@ use crate::fake::fake_type::sentence::Sentence;
 use crate::fake::fake_type::words::Words;
 use anyhow::{anyhow, Result};
 use crate::fake::fake_type::{FakeElement, FakeType, FakeWithFormatElement, FakeWithRangeElement, FakeWithRatioElement};
+use crate::fake::fake_type::constant::Constant;
 use crate::fake::fake_type::last_name::LastName;
 use crate::fake::fake_type::word::Word;
 
@@ -23,6 +24,7 @@ pub enum FakeDefinitionElement {
     NumberWithFormat(NumberWithFormat),
     Array(Array),
     Map(Map),
+    Constant(Constant),
 }
 
 impl FakeDefinitionElement {
@@ -37,6 +39,7 @@ impl FakeDefinitionElement {
             FakeDefinitionElement::NumberWithFormat(data) => data.to_value(),
             FakeDefinitionElement::Array(data) => data.to_value(),
             FakeDefinitionElement::Map(data) => data.to_value(),
+            FakeDefinitionElement::Constant(data) => data.to_value(),
         }
     }
 }
@@ -122,6 +125,11 @@ impl FakeDefinitionElement {
             Err(anyhow!("fake_type: map, undefined fake_definition_element"))
         }
     }
+
+    pub fn generate_constant(fake_definition_element_setting: &serde_json::Map<String, Value>, fake_type: &str) -> Result<FakeDefinitionElement> {
+        let value = fake_definition_element_setting.get("value").ok_or(anyhow!("fake_type: {}, value is missing", fake_type))?;
+        Ok(FakeDefinitionElement::Constant(Constant::new(fake_type.to_string(), value.clone())))
+    }
 }
 
 impl FakeDefinitionElement {
@@ -144,6 +152,7 @@ impl FakeDefinitionElement {
             "number_with_format" => FakeDefinitionElement::generate_with_format_element::<NumberWithFormat>(fake_definition_element_setting, fake_type)?,
             "array" => FakeDefinitionElement::generate_array(fake_definition_element_setting, fake_type)?,
             "map" => FakeDefinitionElement::generate_map(fake_definition_element_setting, fake_type)?,
+            "constant" => FakeDefinitionElement::generate_constant(fake_definition_element_setting, fake_type)?,
             _ => {
                 Err(anyhow!("{} is missing fake_type", fake_type))?
             }
