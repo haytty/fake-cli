@@ -13,6 +13,21 @@ use crate::fake::fake_type::constant::Constant;
 use crate::fake::fake_type::last_name::LastName;
 use crate::fake::fake_type::word::Word;
 
+/// `FakeDefinitionElement` is an enumeration of possible elements that can be included in a `FakeDefinition`.
+/// It supports several data types and includes methods for constructing a `FakeDefinitionElement` from JSON 
+/// and obtaining a `Value`.
+///
+/// # Example
+///
+/// ```
+/// // Create a new instance of FakeDefinitionElement from JSON
+/// let fd = FakeDefinitionElement::generate(&Value::Object(map!{
+///     "fake_type" => Value::String("word".to_string()),
+///     "lang" => Value::String("JA_JP".to_string()),
+/// })).unwrap();
+/// let fd_value = fd.to_value();
+/// println!("Fake definition element value: {:?}", fd_value);
+/// ```
 #[derive(Debug)]
 pub enum FakeDefinitionElement {
     Word(Word),
@@ -159,5 +174,136 @@ impl FakeDefinitionElement {
         };
 
         Ok(obj)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::FakeDefinitionElement;
+    use serde_json::{Value};
+    use anyhow::Result;
+
+    fn generate_element(fake_type: &str, lang: &str) -> Result<FakeDefinitionElement> {
+        let mut fake_definition_element = serde_json::Map::new();
+        fake_definition_element.insert("fake_type".to_string(), Value::String(fake_type.to_string()));
+        fake_definition_element.insert("lang".to_string(), Value::String(lang.to_string()));
+        FakeDefinitionElement::generate(&Value::from(fake_definition_element))
+    }
+
+    fn generate_element_with_range(fake_type: &str, lang: &str, min: usize, max: usize) -> Result<FakeDefinitionElement> {
+        let mut fake_definition_element = serde_json::Map::new();
+        fake_definition_element.insert("fake_type".to_string(), Value::String(fake_type.to_string()));
+        fake_definition_element.insert("lang".to_string(), Value::String(lang.to_string()));
+        fake_definition_element.insert("min".to_string(), Value::Number(serde_json::Number::from(min)));
+        fake_definition_element.insert("max".to_string(), Value::Number(serde_json::Number::from(max)));
+        FakeDefinitionElement::generate(&Value::from(fake_definition_element))
+    }
+
+    fn generate_element_with_ratio(fake_type: &str, lang: &str, ratio: u8) -> Result<FakeDefinitionElement> {
+        let mut fake_definition_element = serde_json::Map::new();
+        fake_definition_element.insert("fake_type".to_string(), Value::String(fake_type.to_string()));
+        fake_definition_element.insert("lang".to_string(), Value::String(lang.to_string()));
+        fake_definition_element.insert("ratio".to_string(), Value::Number(serde_json::Number::from(ratio)));
+        FakeDefinitionElement::generate(&Value::from(fake_definition_element))
+    }
+
+    fn generate_element_with_format(fake_type: &str, lang: &str, format: &str) -> Result<FakeDefinitionElement> {
+        let mut fake_definition_element = serde_json::Map::new();
+        fake_definition_element.insert("fake_type".to_string(), Value::String(fake_type.to_string()));
+        fake_definition_element.insert("lang".to_string(), Value::String(lang.to_string()));
+        fake_definition_element.insert("format".to_string(), Value::String(format.to_string()));
+        FakeDefinitionElement::generate(&Value::from(fake_definition_element))
+    }
+
+    fn generate_element_for_constant(fake_type: &str, value: &str) -> Result<FakeDefinitionElement> {
+        let mut fake_definition_element = serde_json::Map::new();
+        fake_definition_element.insert("fake_type".to_string(), Value::String(fake_type.to_string()));
+        fake_definition_element.insert("value".to_string(), Value::String(value.to_string()));
+        FakeDefinitionElement::generate(&Value::from(fake_definition_element))
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_word() {
+        let fd = generate_element("word", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_last_name() {
+        let fd = generate_element("last_name", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_words() {
+        let fd = generate_element_with_range("words", "EN", 1, 5);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_boolean() {
+        let fd = generate_element_with_ratio("boolean", "EN", 50);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_digit() {
+        let fd = generate_element("digit", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_sentence() {
+        let fd = generate_element_with_range("sentence", "EN", 1, 3);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_number_with_format() {
+        let fd = generate_element_with_format("number_with_format", "EN", "TEST ^#####");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_constant() {
+        let fd = generate_element_for_constant("constant", "aaaaa");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_array() {
+        let mut fake_definition_element = serde_json::Map::new();
+        fake_definition_element.insert("fake_type".to_string(), Value::String("array".to_string()));
+        fake_definition_element.insert("count".to_string(), Value::Number(serde_json::Number::from(1)));
+
+        let mut child_fake_definition_element = serde_json::Map::new();
+        child_fake_definition_element.insert("fake_type".to_string(), Value::String("word".to_string()));
+        child_fake_definition_element.insert("lang".to_string(), Value::String("JA_JP".to_string()));
+
+        fake_definition_element.insert("example_word".to_string(), Value::from(child_fake_definition_element));
+
+        let fd = FakeDefinitionElement::generate(&Value::from(fake_definition_element));
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_map() {
+        let mut fake_definition_element = serde_json::Map::new();
+        fake_definition_element.insert("fake_type".to_string(), Value::String("map".to_string()));
+
+        let mut child_fake_definition_element = serde_json::Map::new();
+        child_fake_definition_element.insert("fake_type".to_string(), Value::String("word".to_string()));
+        child_fake_definition_element.insert("lang".to_string(), Value::String("JA_JP".to_string()));
+
+        fake_definition_element.insert("example_word".to_string(), Value::from(child_fake_definition_element));
+
+        let fd = FakeDefinitionElement::generate(&Value::from(fake_definition_element));
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_missing_fake_type() {
+        let fd = generate_element("undefined_type", "EN");
+        assert!(fd.is_err(), "Should return an error for an undefined fake type");
     }
 }
