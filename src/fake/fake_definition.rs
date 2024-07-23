@@ -11,9 +11,10 @@ impl FakeDefinition {
         let mut btree_map = BTreeMap::new();
 
         let fake_definition_element_map = match fake_definition_json {
-            Value::Object(map) => Some(map),
-            _ => None
-        }.ok_or(anyhow!("undefined fake_definition_json"))?;
+            Value::Object(map) => Ok(map),
+            Value::Array(_) => Err(anyhow!("INVALID JSON FORMAT: fake_definition_json should be map format. If you want to generate multiple data, please use the count option")),
+            _ => Err(anyhow!("INVALID JSON FORMAT: undefined fake_definition_json"))
+        }?;
 
         for (fake_definition_element_key, fake_definition_element_value) in fake_definition_element_map {
             let fake_definition_element = FakeDefinitionElement::generate(fake_definition_element_value)?;

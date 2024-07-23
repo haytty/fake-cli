@@ -127,9 +127,9 @@ impl FakeDefinitionElement {
 impl FakeDefinitionElement {
     pub fn generate(fake_definition_element_value: &Value) -> Result<FakeDefinitionElement> {
         let fake_definition_element_setting = match fake_definition_element_value {
-            Value::Object(map) => Some(map),
-            _ => None
-        }.ok_or(anyhow!("fake_definition_element_settings: undefined"))?;
+            Value::Object(map) => Ok(map),
+            _ => Err(anyhow!("INVALID JSON FORMAT: fake_definition_element_settings is undefined"))
+        }?;
 
         let value = fake_definition_element_setting.get("fake_type").ok_or(anyhow!("fake_definition_element_settings: fake_type is missing"))?;
         let fake_type = value.as_str().ok_or(anyhow!("fake_definition_element_settings: fake_type convert error"))?;
