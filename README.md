@@ -54,8 +54,9 @@ The available `fake_type`'s are:
 - NumberWithFormat
 - Array
 - Map
+- Constant
 
-Note: `Array` and `Map` are specific to fake-cli.
+Note: `Array` and `Map` and `Constant` are specific to fake-cli.
 
 The `fake_type` can be any callable method from fake-rs, and it is ready to use when converted to snake_case.
 
