@@ -4,6 +4,9 @@ mod fake;
 
 use anyhow::Result;
 
-fn main() -> Result<()> {
-    cli::start()
+fn main() {
+    match cli::start() {
+        Ok(_) => (),
+        Err(e) => println!("{}", e)
+    }
 }
