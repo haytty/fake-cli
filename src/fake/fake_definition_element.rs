@@ -10,7 +10,26 @@ use crate::fake::fake_type::words::Words;
 use anyhow::{anyhow, Result};
 use crate::fake::fake_type::{FakeElement, FakeType, FakeWithFormatElement, FakeWithRangeElement, FakeWithRatioElement};
 use crate::fake::fake_type::constant::Constant;
+use crate::fake::fake_type::domain_suffix::DomainSuffix;
+use crate::fake::fake_type::first_name::FirstName;
+use crate::fake::fake_type::free_email::FreeEmail;
+use crate::fake::fake_type::free_email_provider::FreeEmailProvider;
+use crate::fake::fake_type::ip::IP;
+use crate::fake::fake_type::ip_v4::IPv4;
+use crate::fake::fake_type::ip_v6::IPv6;
 use crate::fake::fake_type::last_name::LastName;
+use crate::fake::fake_type::mac_address::MACAddress;
+use crate::fake::fake_type::name::Name;
+use crate::fake::fake_type::name_with_title::NameWithTitle;
+use crate::fake::fake_type::paragraph::Paragraph;
+use crate::fake::fake_type::paragraphs::Paragraphs;
+use crate::fake::fake_type::password::Password;
+use crate::fake::fake_type::safe_email::SafeEmail;
+use crate::fake::fake_type::sentences::Sentences;
+use crate::fake::fake_type::suffix::Suffix;
+use crate::fake::fake_type::title::Title;
+use crate::fake::fake_type::user_agent::UserAgent;
+use crate::fake::fake_type::username::Username;
 use crate::fake::fake_type::word::Word;
 
 /// `FakeDefinitionElement` is an enumeration of possible elements that can be included in a `FakeDefinition`.
@@ -30,13 +49,43 @@ use crate::fake::fake_type::word::Word;
 /// ```
 #[derive(Debug)]
 pub enum FakeDefinitionElement {
+    // Lorem
     Word(Word),
-    LastName(LastName),
     Words(Words),
-    Boolean(Boolean),
-    Digit(Digit),
     Sentence(Sentence),
+    Sentences(Sentences),
+    Paragraph(Paragraph),
+    Paragraphs(Paragraphs),
+
+    // Name
+    FirstName(FirstName),
+    LastName(LastName),
+    Title(Title),
+    Suffix(Suffix),
+    Name(Name),
+    NameWithTitle(NameWithTitle),
+
+    // Number
+    Digit(Digit),
     NumberWithFormat(NumberWithFormat),
+
+    // Boolean
+    Boolean(Boolean),
+
+    // Internet
+    FreeEmailProvider(FreeEmailProvider),
+    DomainSuffix(DomainSuffix),
+    FreeEmail(FreeEmail),
+    SafeEmail(SafeEmail),
+    Username(Username),
+    Password(Password),
+    IPv4(IPv4),
+    IPv6(IPv6),
+    IP(IP),
+    MACAddress(MACAddress),
+    UserAgent(UserAgent),
+
+    // FakeCliOriginal
     Array(Array),
     Map(Map),
     Constant(Constant),
@@ -45,13 +94,43 @@ pub enum FakeDefinitionElement {
 impl FakeDefinitionElement {
     pub fn to_value(&self) -> Value {
         match self {
+            // Lorem
             FakeDefinitionElement::Word(data) => data.to_value(),
-            FakeDefinitionElement::LastName(data) => data.to_value(),
-            FakeDefinitionElement::Sentence(data) => data.to_value(),
             FakeDefinitionElement::Words(data) => data.to_value(),
-            FakeDefinitionElement::Boolean(data) => data.to_value(),
+            FakeDefinitionElement::Sentence(data) => data.to_value(),
+            FakeDefinitionElement::Sentences(data) => data.to_value(),
+            FakeDefinitionElement::Paragraph(data) => data.to_value(),
+            FakeDefinitionElement::Paragraphs(data) => data.to_value(),
+
+            // Name
+            FakeDefinitionElement::FirstName(data) => data.to_value(),
+            FakeDefinitionElement::LastName(data) => data.to_value(),
+            FakeDefinitionElement::Title(data) => data.to_value(),
+            FakeDefinitionElement::Suffix(data) => data.to_value(),
+            FakeDefinitionElement::Name(data) => data.to_value(),
+            FakeDefinitionElement::NameWithTitle(data) => data.to_value(),
+
+            // Number
             FakeDefinitionElement::Digit(data) => data.to_value(),
             FakeDefinitionElement::NumberWithFormat(data) => data.to_value(),
+
+            // Boolean
+            FakeDefinitionElement::Boolean(data) => data.to_value(),
+
+            // Internet
+            FakeDefinitionElement::FreeEmailProvider(data) => data.to_value(),
+            FakeDefinitionElement::DomainSuffix(data) => data.to_value(),
+            FakeDefinitionElement::FreeEmail(data) => data.to_value(),
+            FakeDefinitionElement::SafeEmail(data) => data.to_value(),
+            FakeDefinitionElement::Username(data) => data.to_value(),
+            FakeDefinitionElement::Password(data) => data.to_value(),
+            FakeDefinitionElement::IPv4(data) => data.to_value(),
+            FakeDefinitionElement::IPv6(data) => data.to_value(),
+            FakeDefinitionElement::IP(data) => data.to_value(),
+            FakeDefinitionElement::MACAddress(data) => data.to_value(),
+            FakeDefinitionElement::UserAgent(data) => data.to_value(),
+
+            // FakeCliOriginal
             FakeDefinitionElement::Array(data) => data.to_value(),
             FakeDefinitionElement::Map(data) => data.to_value(),
             FakeDefinitionElement::Constant(data) => data.to_value(),
@@ -158,13 +237,43 @@ impl FakeDefinitionElement {
         let fake_type = value.as_str().ok_or(anyhow!("fake_definition_element_settings: fake_type convert error"))?;
 
         let obj = match fake_type {
+            // Lorem
             "word" => FakeDefinitionElement::generate_element::<Word>(fake_definition_element_setting, fake_type)?,
-            "last_name" => FakeDefinitionElement::generate_element::<LastName>(fake_definition_element_setting, fake_type)?,
             "words" => FakeDefinitionElement::generate_with_range_element::<Words>(fake_definition_element_setting, fake_type)?,
-            "boolean" => FakeDefinitionElement::generate_with_ratio_element::<Boolean>(fake_definition_element_setting, fake_type)?,
-            "digit" => FakeDefinitionElement::generate_element::<Digit>(fake_definition_element_setting, fake_type)?,
             "sentence" => FakeDefinitionElement::generate_with_range_element::<Sentence>(fake_definition_element_setting, fake_type)?,
+            "sentences" => FakeDefinitionElement::generate_with_range_element::<Sentences>(fake_definition_element_setting, fake_type)?,
+            "paragraph" => FakeDefinitionElement::generate_with_range_element::<Paragraph>(fake_definition_element_setting, fake_type)?,
+            "paragraphs" => FakeDefinitionElement::generate_with_range_element::<Paragraphs>(fake_definition_element_setting, fake_type)?,
+
+            // Name
+            "first_name" => FakeDefinitionElement::generate_element::<FirstName>(fake_definition_element_setting, fake_type)?,
+            "last_name" => FakeDefinitionElement::generate_element::<LastName>(fake_definition_element_setting, fake_type)?,
+            "title" => FakeDefinitionElement::generate_element::<Title>(fake_definition_element_setting, fake_type)?,
+            "suffix" => FakeDefinitionElement::generate_element::<Suffix>(fake_definition_element_setting, fake_type)?,
+            "name" => FakeDefinitionElement::generate_element::<Name>(fake_definition_element_setting, fake_type)?,
+            "name_with_title" => FakeDefinitionElement::generate_element::<NameWithTitle>(fake_definition_element_setting, fake_type)?,
+
+            // Number
+            "digit" => FakeDefinitionElement::generate_element::<Digit>(fake_definition_element_setting, fake_type)?,
             "number_with_format" => FakeDefinitionElement::generate_with_format_element::<NumberWithFormat>(fake_definition_element_setting, fake_type)?,
+
+            // Boolean
+            "boolean" => FakeDefinitionElement::generate_with_ratio_element::<Boolean>(fake_definition_element_setting, fake_type)?,
+
+            // Internet
+            "free_email_provider" => FakeDefinitionElement::generate_element::<FreeEmailProvider>(fake_definition_element_setting, fake_type)?,
+            "domain_suffix" => FakeDefinitionElement::generate_element::<DomainSuffix>(fake_definition_element_setting, fake_type)?,
+            "free_email" => FakeDefinitionElement::generate_element::<FreeEmail>(fake_definition_element_setting, fake_type)?,
+            "safe_email" => FakeDefinitionElement::generate_element::<SafeEmail>(fake_definition_element_setting, fake_type)?,
+            "username" => FakeDefinitionElement::generate_element::<Username>(fake_definition_element_setting, fake_type)?,
+            "password" => FakeDefinitionElement::generate_with_range_element::<Password>(fake_definition_element_setting, fake_type)?,
+            "ip_v4" => FakeDefinitionElement::generate_element::<IPv4>(fake_definition_element_setting, fake_type)?,
+            "ip_v6" => FakeDefinitionElement::generate_element::<IPv6>(fake_definition_element_setting, fake_type)?,
+            "ip" => FakeDefinitionElement::generate_element::<IP>(fake_definition_element_setting, fake_type)?,
+            "mac_address" => FakeDefinitionElement::generate_element::<MACAddress>(fake_definition_element_setting, fake_type)?,
+            "user_agent" => FakeDefinitionElement::generate_element::<UserAgent>(fake_definition_element_setting, fake_type)?,
+
+            // FakeCliOriginal
             "array" => FakeDefinitionElement::generate_array(fake_definition_element_setting, fake_type)?,
             "map" => FakeDefinitionElement::generate_map(fake_definition_element_setting, fake_type)?,
             "constant" => FakeDefinitionElement::generate_constant(fake_definition_element_setting, fake_type)?,
@@ -222,15 +331,10 @@ mod tests {
         FakeDefinitionElement::generate(&Value::from(fake_definition_element))
     }
 
+    // Lorem
     #[test]
     fn test_fake_definition_element_generate_for_word() {
         let fd = generate_element("word", "EN");
-        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
-    }
-
-    #[test]
-    fn test_fake_definition_element_generate_for_last_name() {
-        let fd = generate_element("last_name", "EN");
         assert!(fd.is_ok(), "Should return Ok for a defined fake type");
     }
 
@@ -241,20 +345,70 @@ mod tests {
     }
 
     #[test]
-    fn test_fake_definition_element_generate_for_boolean() {
-        let fd = generate_element_with_ratio("boolean", "EN", 50);
+    fn test_fake_definition_element_generate_for_sentence() {
+        let fd = generate_element_with_range("sentence", "EN", 1, 3);
         assert!(fd.is_ok(), "Should return Ok for a defined fake type");
     }
 
+    #[test]
+    fn test_fake_definition_element_generate_for_sentences() {
+        let fd = generate_element_with_range("sentences", "EN", 1, 3);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_paragraph() {
+        let fd = generate_element_with_range("paragraph", "EN", 1, 3);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_paragraphs() {
+        let fd = generate_element_with_range("paragraphs", "EN", 1, 3);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    // Name
+    #[test]
+    fn test_fake_definition_element_generate_for_first_name() {
+        let fd = generate_element("first_name", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_last_name() {
+        let fd = generate_element("last_name", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_title() {
+        let fd = generate_element("title", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_suffix() {
+        let fd = generate_element("suffix", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_name() {
+        let fd = generate_element("name", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_name_with_title() {
+        let fd = generate_element("name_with_title", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    // Number
     #[test]
     fn test_fake_definition_element_generate_for_digit() {
         let fd = generate_element("digit", "EN");
-        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
-    }
-
-    #[test]
-    fn test_fake_definition_element_generate_for_sentence() {
-        let fd = generate_element_with_range("sentence", "EN", 1, 3);
         assert!(fd.is_ok(), "Should return Ok for a defined fake type");
     }
 
@@ -264,6 +418,81 @@ mod tests {
         assert!(fd.is_ok(), "Should return Ok for a defined fake type");
     }
 
+    // Boolean
+    #[test]
+    fn test_fake_definition_element_generate_for_boolean() {
+        let fd = generate_element_with_ratio("boolean", "EN", 50);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    // Internet
+    #[test]
+    fn test_fake_definition_element_generate_for_free_email_provider() {
+        let fd = generate_element("free_email_provider", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_domain_suffix() {
+        let fd = generate_element("domain_suffix", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_free_email() {
+        let fd = generate_element("free_email", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_safe_email() {
+        let fd = generate_element("safe_email", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_username() {
+        let fd = generate_element("username", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_password() {
+        let fd = generate_element_with_range("username", "EN", 1, 5);
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_ip_v4() {
+        let fd = generate_element("ip_v4", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_ip_v6() {
+        let fd = generate_element("ip_v6", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_ip() {
+        let fd = generate_element("ip", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_mac_address() {
+        let fd = generate_element("mac_address", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    #[test]
+    fn test_fake_definition_element_generate_for_user_agent() {
+        let fd = generate_element("user_agent", "EN");
+        assert!(fd.is_ok(), "Should return Ok for a defined fake type");
+    }
+
+    // FakeCliOriginal
     #[test]
     fn test_fake_definition_element_generate_for_constant() {
         let fd = generate_element_for_constant("constant", "aaaaa");
